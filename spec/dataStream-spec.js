@@ -27,7 +27,8 @@ if (typeof Peeracle === 'undefined') {
   var Peeracle = require('..');
 }
 
-var dataStreams = ['MemoryDataStream', 'FileDataStream', 'HttpDataStream'];
+var dataStreams = ['MemoryDataStream'];
+/*, 'FileDataStream', 'HttpDataStream'];*/
 
 describe('DataStream', function () {
   for (var dataStream in dataStreams) {
@@ -55,7 +56,7 @@ function executeDataStreamTest(dataStreamName) {
       if (dataStreamName === 'MemoryDataStream') {
         it('should try to be called without arguments and throw an error',
           function () {
-            var createWithEmptyArguments = function () {
+              var createWithEmptyArguments = function () {
               new Peeracle.MemoryDataStream();
             };
 
@@ -87,11 +88,35 @@ function executeDataStreamTest(dataStreamName) {
       }
     });
     describe('length', function () {
+      it('should return length', function () {
+        expect(dataStream.length()).toEqual(jasmine.any
+        (Peeracle.MemoryDataStream.options.buffer.length));
+      });
     });
     describe('tell', function () {
+      it('should return 0', function () {
+        expect(dataStream.tell()).toEqual(0);
+      });
     });
+
     describe('seek', function () {
+      var position;
+        it("should be number", function() {
+          if (typeof position !== 'number') {
+            expect(dataStream.seek()).toThrow(jasmine.any(TypeError));
+          }
+        });
+        it("should be between 0 and buffer length", function() {
+          if (position < 0 || position > Peeracle.MemoryDataStream.buffer.length) {
+            expect(dataStream.seek()).toThrow(jasmine.any(RangeError));
+          }
+        });
+      it("should return position", function() {
+        expect((Peeracle.MemoryDataStream.offset).toEqual(position));
+        expect(dataStream.seek()).toEqual(position);
+      });
     });
+
     describe('read', function () {
     });
     describe('peek', function () {
